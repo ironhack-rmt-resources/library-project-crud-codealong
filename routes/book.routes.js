@@ -23,6 +23,35 @@ router.get("/books", (req, res, next) => {
 });
 
 
+
+// GET /books/create    (display form)
+router.get("/books/create", (req, res, next) => {
+    res.render("books/book-create");
+});
+
+
+
+// POST /books/create   (process form)
+router.post("/books/create", (req, res, next) => {
+
+    const newBook = {
+        title: req.body.title,
+        description: req.body.description,
+        author: req.body.author,
+        rating: req.body.rating
+    };
+
+    Book.create(newBook)
+        .then( (newBook) => {
+            res.redirect("/books");
+        })
+        .catch( e => {
+            console.log("error creating new book", e);
+            next(e);
+        });
+});
+
+
 // GET /books/:bookId
 router.get("/books/:bookId", (req, res, next) => {
     const id = req.params.bookId;
