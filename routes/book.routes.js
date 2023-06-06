@@ -79,6 +79,17 @@ router.post('/books/:bookId/edit', (req, res, next) => {
 
 
 
+// DELETE: delete book
+router.post('/books/:bookId/delete', (req, res, next) => {
+    const { bookId } = req.params;
+
+    Book.findByIdAndDelete(bookId)
+        .then(() => res.redirect('/books'))
+        .catch(error => next(error));
+});
+
+
+
 // READ: display details of one book
 router.get("/books/:bookId", (req, res, next) => {
     const id = req.params.bookId;
