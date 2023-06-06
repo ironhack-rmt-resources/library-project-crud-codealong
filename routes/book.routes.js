@@ -5,7 +5,7 @@ const Book = require('../models/Book.model');
 
 
 
-// GET /books
+// READ: display all books
 router.get("/books", (req, res, next) => {
     Book.find()
         .then( (booksFromDB) => {
@@ -24,14 +24,14 @@ router.get("/books", (req, res, next) => {
 
 
 
-// GET /books/create    (display form)
+// CREATE: display form
 router.get("/books/create", (req, res, next) => {
     res.render("books/book-create");
 });
 
 
 
-// POST /books/create   (process form)
+// CREATE: process form
 router.post("/books/create", (req, res, next) => {
 
     const newBook = {
@@ -52,7 +52,34 @@ router.post("/books/create", (req, res, next) => {
 });
 
 
-// GET /books/:bookId
+
+// UPDATE: display form
+router.get('/books/:bookId/edit', (req, res, next) => {
+    const { bookId } = req.params;
+
+    Book.findById(bookId)
+        .then(bookToEdit => {
+            // console.log(bookToEdit);
+            res.render('books/book-edit.hbs', { book: bookToEdit }); // <-- add this line
+        })
+        .catch(error => next(error));
+});
+
+
+
+// UPDATE: process form
+router.post('/books/:bookId/edit', (req, res, next) => {
+    const { bookId } = req.params;
+    const { title, description, author, rating } = req.body;
+
+    Book.findByIdAndUpdate(bookId, { title, description, author, rating }, { new: true })
+        .then(updatedBook => res.redirect(`/books/${updatedBook.id}`)) // go to the details page to see the updates
+        .catch(error => next(error));
+});
+
+
+
+// READ: display details of one book
 router.get("/books/:bookId", (req, res, next) => {
     const id = req.params.bookId;
 
